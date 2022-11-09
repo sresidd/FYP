@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLook : MonoBehaviour
@@ -23,6 +21,18 @@ public class PlayerLook : MonoBehaviour
 
         //rotate player to look left and right
         transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
+    }
+
+    public void ChangeSensitivity(bool adsMode){
+        if(adsMode){
+            xSensitivity = 10f;
+            ySensitivity = 10f;
+        }
+        else{
+            xSensitivity = 30f;
+            ySensitivity = 30f;
+        }
+        print(new Vector2(xSensitivity,ySensitivity));
     }
 
     

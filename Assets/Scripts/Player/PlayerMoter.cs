@@ -10,7 +10,7 @@ public class PlayerMoter : MonoBehaviour
     private bool sprinting;
     public float gravity = -9.8f;
     public float speed = 5f;
-    public float jumpHeight = 3f;
+    public float jumpHeight = 1f;
     float crouchTimer;
 
     void Start()
@@ -23,8 +23,12 @@ public class PlayerMoter : MonoBehaviour
         isGrounded = controller.isGrounded;
         if(lerpCrouch){
             crouchTimer += Time.deltaTime;
+            // print(Time.deltaTime);
+            // print("crouchTimer" +crouchTimer);
             float p = crouchTimer /1;
+            // print("p" + p);
             p *= p;
+            // print("p-change" + p);
             if(crouching)
                 controller.height = Mathf.Lerp(controller.height,1,p);
             else
@@ -46,12 +50,17 @@ public class PlayerMoter : MonoBehaviour
         if(isGrounded && playerVelocity.y<0)
             playerVelocity.y = -2f;
         controller.Move(playerVelocity*Time.deltaTime);
-        print(playerVelocity.y);
     }
 
     public void Jump(){
         if(isGrounded){
-            playerVelocity.y = Mathf.Sqrt(jumpHeight*-3 *gravity);
+            playerVelocity.y =(jumpHeight*-1 *gravity)/5;
+
+            // Mathf.Sqrt
+            print(playerVelocity.y);
+            if(crouching){
+                playerVelocity.y/=2;
+            }
         }
     }
 

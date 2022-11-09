@@ -2,11 +2,20 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
+    public bool useEvents;
+
+    
     //message displayed to player when looking at interactable.
     public string promptMessage;
 
+    public virtual string OnLook(){
+        return promptMessage;
+    }
+
     //this function will be called from our player.
     public void BaseInteract(){
+        if(useEvents)
+             GetComponent<InteractionEvent>().OnInteract.Invoke();
         Interact();
     }
     protected virtual void Interact(){

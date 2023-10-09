@@ -2,22 +2,19 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    private Camera cam;
+    [SerializeField] private Camera cam;
     private PlayerUI playerUI;
-    private InputManager inputManager;
-    [SerializeField]private LayerMask mask;
-    [SerializeField]private float distance = 3f;
+    [SerializeField] private LayerMask mask;
+    [SerializeField] private float distance = 3f;
     // Start is called before the first frame update
 
-    void Start()
+    private void Start()
     {
-        cam = GetComponent<PlayerLook>().cam;
         playerUI = GetComponent<PlayerUI>();
-        inputManager = GetComponent<InputManager>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         playerUI.UpdateText(string.Empty);
         Ray ray = new Ray(cam.transform.position,cam.transform.forward) ;
@@ -28,7 +25,7 @@ public class PlayerInteract : MonoBehaviour
             if(hitInfo.collider.GetComponent<Interactable>()!=null){
                 Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
                 playerUI.UpdateText(interactable.promptMessage);
-                if(inputManager.OnFoot.Interact.triggered){
+                if(InputManager.Instance.OnFoot.Interact.triggered){
                     interactable.BaseInteract();
                 }
             }

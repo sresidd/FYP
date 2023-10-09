@@ -24,13 +24,13 @@ public class Enemy : MonoBehaviour
     public bool playerInSightAttack = false;
 
 
-    void Start()
+    private void Start()
     {
         stateMachine = GetComponent<StateMachine>();
         agent = GetComponent<NavMeshAgent>();
     }
 
-    void OnDestroy(){
+    private void OnDestroy(){
         if(path==null)
             return;
         Destroy(path.gameObject);
@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         playerInSightChase = Physics.CheckSphere(transform.position,chaseDistance, playerMask);
         playerInSightAttack = Physics.CheckSphere(transform.position,attackDistance, playerMask);

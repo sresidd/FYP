@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class WeaponSway : MonoBehaviour
 {
-    [SerializeField] Transform Gun;
     public float intensity;
     public float smooth;
     // public bool isMine;
@@ -11,13 +10,18 @@ public class WeaponSway : MonoBehaviour
 
     private void Start()
     {
-        origin_rotation = Gun.localRotation;
+        origin_rotation = transform.localRotation;
     }
 
-    #region Private Methods
-
-    public void UpdateSway (Vector2 input)
+    private void LateUpdate()
     {
+        UpdateSway();
+    }
+
+    private void UpdateSway()
+    {
+        Vector2 input = InputManager.Instance.GetLookVectorNormalized();
+        
         //controls
         float t_x_mouse = input.x;
         float t_y_mouse = input.y;
@@ -28,8 +32,6 @@ public class WeaponSway : MonoBehaviour
         Quaternion target_rotation = origin_rotation * t_x_adj * t_y_adj;
 
         //rotate towards target rotation
-        Gun.localRotation = Quaternion.Lerp(Gun.localRotation, target_rotation, Time.deltaTime * smooth);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, target_rotation, Time.deltaTime * smooth);
     }
-
-    #endregion
 }

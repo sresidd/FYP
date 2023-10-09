@@ -1,19 +1,30 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerLook : MonoBehaviour
+public class PlayerLook : NetworkBehaviour
 {
-    public Camera cam;
+    [SerializeField] private Camera cam;
+    [SerializeField] private float xSensitivity = 30f;
+    [SerializeField] private float ySensitivity = 30f;
     private float xRotation = 0f;
+    private void Start()
+    {
+    }
+    
+    private void LateUpdate()
+    {
+        if(!IsOwner) return;
+        ProcessLook();
+    }
 
-    public float xSensitivity = 30f;
-    public float ySensitivity = 30f;
+    private void ProcessLook(){
+        Vector2 input = InputManager.Instance.GetLookVectorNormalized();
 
-    public void ProcessLook(Vector2 input){
         float mouseX = input.x;
         float mouseY = input.y;
 
         //Calculate camera rotation for looking up and down
-        xRotation -= (mouseY * Time.deltaTime) * ySensitivity;
+        xRotation -= mouseY * Time.deltaTime * ySensitivity;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
         //apply this to our camera transform.
@@ -24,14 +35,15 @@ public class PlayerLook : MonoBehaviour
     }
 
     public void ChangeSensitivity(bool adsMode){
-        if(adsMode){
-            xSensitivity = 10f;
-            ySensitivity = 10f;
-        }
-        else{
-            xSensitivity = 30f;
-            ySensitivity = 30f;
-        }
+        // if(adsMode){
+        //     xSensitivity = 10f;
+        //     ySensitivity = 10f;
+        // }
+        // else{
+        //     xSensitivity = 30f;
+        //     ySensitivity = 30f;
+        // }
+        xSensitivity = ySensitivity = adsMode ? 10f : 30f;
         print(new Vector2(xSensitivity,ySensitivity));
     }
 

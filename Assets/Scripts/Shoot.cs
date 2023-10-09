@@ -2,70 +2,118 @@ using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections;
 using TMPro;
+using Unity.Netcode;
 
-public class Shoot : MonoBehaviour
+public class Shoot : NetworkBehaviour
 {
-    public Camera cam;
-    AudioSource audioSource;
-    public VisualEffect muzzleFlash;
-    public GameObject ImapcatEffect;
+    [SerializeField] private Camera cam;
+    private AudioSource audioSource;
+    [SerializeField] private VisualEffect muzzleFlash;
+    [SerializeField] private GameObject ImpactEffect;
     
-    [SerializeField] 
-    float rateOfFire = 5f;
+    [SerializeField] private float rateOfFire = 5f;
 
-    [HideInInspector]
-    public bool rapidFire = false;
-    public void ToggleFireMode(bool fireMode){
-        rapidFire = fireMode;
-    }
-
-    public void ToggleADS(bool adsMode){
-        lerpTimer = 0f;
-        isADS = adsMode;
-    }
-
-    [HideInInspector] 
-    public bool isADS = false;
-    bool startReloading = false;
-
-    [SerializeField]
-    float impulseForce = 10f;
+    [HideInInspector] public bool fireMode = false;
 
 
-    [SerializeField]
-    TMP_Text ammoCounter;
+    [HideInInspector] public bool adsMode = false;
+    private bool startReloading = false;
+
+    [SerializeField] private float impulseForce = 10f;
+    [SerializeField] private TMP_Text ammoCounter;
+    [SerializeField] private int maxAmmo;
+    [SerializeField] private float reloadTime = 2f;
+    private int currentAmmo;
+    private WaitForSeconds rapidFireWait;
+    private WaitForSeconds reloadWait;
+
+    private Coroutine Coroutine_Fire;
 
 
-    [SerializeField] 
-    int maxAmmo;
+    [SerializeField] private Transform ADS_Position,
+                                    Default_Position,
+                                    weaponPosition;
 
-
-    [SerializeField] 
-    float reloatTime = 2f;
-
-    int currentAmmo;
-    WaitForSeconds rapidFireWait;
-    WaitForSeconds reloadWait;
-
-
-    [SerializeField]Transform ADS_Position,Default_Position,weaponPositon;
-
-    [SerializeField]
-    float animationSpeed = 10f;
-    float lerpTimer;
-    [HideInInspector]
-    public bool isReloading = false;
-    void Awake(){
+    [SerializeField] private float animationSpeed = 10f;
+    private float lerpTimer;
+    [HideInInspector] public bool isReloading = false;
+    private void Awake()
+    {
         rapidFireWait = new WaitForSeconds(1/rateOfFire);
         currentAmmo = maxAmmo;
-        reloadWait = new WaitForSeconds(reloatTime);
+        reloadWait = new WaitForSeconds(reloadTime);
         ammoCounter.text = currentAmmo.ToString()+"/"+maxAmmo.ToString();
-        weaponPositon.position = Default_Position.position;
+        weaponPosition.position = Default_Position.position;
         audioSource = GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
-    }    
+    }   
 
-    public void Fire(){
+    private void Start()
+    {
+        InputManager.Instance.OnShoot += InputManager_Firing;
+        InputManager.Instance.OnReloadPerformed += InputManager_OnReload;
+        InputManager.Instance.OnToggleFireModePerformed += InputManager_OnToggleFireMode;
+        InputManager.Instance.OnToggleADSPerformed += InputManager_OnToggleADS;
+    }
+
+    private void InputManager_OnReload()
+    {
+        StartCoroutine(Reload());
+    }
+
+    private void InputManager_Firing(bool isFiring)
+    {
+        if(isFiring)
+        {
+            Coroutine_Fire = StartCoroutine(RapidFire());
+        }
+
+        else if(!isFiring)
+        {
+            if(Coroutine_Fire == null) return;
+            StopCoroutine(Coroutine_Fire);
+        }
+    }
+
+
+
+    public IEnumerator RapidFire(){
+
+        if(fireMode)
+        {
+            while(CanFire())
+            {
+                Fire();
+                yield return rapidFireWait;
+            }
+            StartCoroutine(Reload());
+        }
+        else if(CanFire())
+        {
+            Fire();
+            yield return null;
+        }
+        else StartCoroutine(Reload());
+    }
+
+    public IEnumerator Reload()
+    {
+        if(currentAmmo==maxAmmo) yield return null;
+        isReloading = true;
+        startReloading = true;
+        print("Reloading.....");
+
+        yield return reloadWait;
+        currentAmmo = maxAmmo;
+        ammoCounter.text = currentAmmo.ToString()+"/"+maxAmmo.ToString();
+        print("Reloaded.");
+
+        startReloading = false;
+        isReloading = false;
+    }
+
+    public void Fire()
+    {
         currentAmmo--;
         ammoCounter.text = currentAmmo.ToString()+"/"+maxAmmo.ToString();
         audioSource.PlayOneShot(audioSource.clip);
@@ -74,68 +122,50 @@ public class Shoot : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(ray,out hit,100)){
             Enemy enemy = hit.transform.GetComponent<Enemy>();
-            if(enemy!=null){
+            if(enemy!=null)
+            {
                 enemy.TakeDamageEnemy();
             }
-            if(hit.rigidbody!=null){
+            if(hit.rigidbody!=null)
+            {
                 hit.rigidbody.AddForce(-hit.normal*impulseForce,ForceMode.Impulse);
             }
-            GameObject impact = Instantiate(ImapcatEffect,hit.point,Quaternion.identity);
+            GameObject impact = Instantiate(ImpactEffect,hit.point,Quaternion.LookRotation(hit.normal));
             Destroy(impact,2f);
         }
     }
-
-    public IEnumerator RapidFire(){
-
-        if(rapidFire){
-            while(CanFire()){
-                Fire();
-                yield return rapidFireWait;
-            }
-            StartCoroutine(Reload());
-        }
-        else if(CanFire()){
-            Fire();
-            yield return null;
-        }
-        else
-            StartCoroutine(Reload());
+    public void InputManager_OnToggleFireMode()
+    {
+        fireMode = !fireMode ; 
     }
 
-    public IEnumerator Reload(){
-        if(currentAmmo==maxAmmo)
-            yield return null;
-        isReloading = true;
-        startReloading = true;
-        print("Reloading.....");
-        yield return reloadWait;
-        currentAmmo = maxAmmo;
-        ammoCounter.text = currentAmmo.ToString()+"/"+maxAmmo.ToString();
-        print("Reloaded.");
-        startReloading = false;
-        isReloading = false;
+    public void InputManager_OnToggleADS()
+    {
+        lerpTimer = 0f;
+        adsMode = !adsMode ;
     }
     void FixedUpdate(){
-        if(isADS)
+        if(!IsOwner) return;
+        if(adsMode)
         {
-            LearpingValues(weaponPositon.position, ADS_Position.position, 60, 40);
+            LerpingValues(weaponPosition.position, ADS_Position.position, 60, 40);
         }
-        else if(!isADS)
+        else if(!adsMode)
         {
-            LearpingValues(weaponPositon.position, Default_Position.position, 40, 60);
+            LerpingValues(weaponPosition.position, Default_Position.position, 40, 60);
         }
     }
 
-    private void LearpingValues(Vector3 initPos, Vector3 setPos, float initFOV, float setFOV)
+    private void LerpingValues(Vector3 initPos, Vector3 setPos, float initFOV, float setFOV)
     {
         lerpTimer += Time.deltaTime;
         float percentCompleted = lerpTimer / animationSpeed;
-        weaponPositon.position = Vector3.Lerp(initPos,setPos, percentCompleted);
+        weaponPosition.position = Vector3.Lerp(initPos,setPos, percentCompleted);
         cam.fieldOfView = Mathf.Lerp(initFOV, setFOV, percentCompleted);
 
     }
 
-    bool CanFire(){
+    private bool CanFire(){
         bool enableFire = currentAmmo>0 && !isReloading;
         return enableFire;
     }

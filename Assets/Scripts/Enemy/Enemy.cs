@@ -4,15 +4,11 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     public event System.Action<float> OnAttack;
-    private StateMachine stateMachine;
     private NavMeshAgent agent;
     public NavMeshAgent Agent {get => agent;}
     public LayerMask playerMask;
 
     public Transform Player;
-
-    public float chaseDistance = 5f;
-    public float attackDistance = 2f;
 
     [SerializeField] 
     private string currentState;
@@ -26,7 +22,6 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        stateMachine = GetComponent<StateMachine>();
         agent = GetComponent<NavMeshAgent>();
     }
 
@@ -45,15 +40,15 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        playerInSightChase = Physics.CheckSphere(transform.position,chaseDistance, playerMask);
-        playerInSightAttack = Physics.CheckSphere(transform.position,attackDistance, playerMask);
-        if(playerInSightChase&&!playerInSightAttack)
-            stateMachine.ChangeState(stateMachine.chaseState);
-        else if(playerInSightAttack&&playerInSightChase)
-            stateMachine.ChangeState(stateMachine.attackState);
-        else if(!playerInSightAttack&&!playerInSightChase)
-            stateMachine.ChangeState(stateMachine.patrolState);
-    }
+    // private void Update()
+    // {
+    //     playerInSightChase = Physics.CheckSphere(transform.position,chaseDistance, playerMask);
+    //     playerInSightAttack = Physics.CheckSphere(transform.position,attackDistance, playerMask);
+    //     if(playerInSightChase&&!playerInSightAttack)
+    //         stateMachine.ChangeState(stateMachine.chaseState);
+    //     else if(playerInSightAttack&&playerInSightChase)
+    //         stateMachine.ChangeState(stateMachine.attackState);
+    //     else if(!playerInSightAttack&&!playerInSightChase)
+    //         stateMachine.ChangeState(stateMachine.patrolState);
+    // }
 }

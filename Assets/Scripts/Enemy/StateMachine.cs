@@ -3,24 +3,20 @@ using UnityEngine;
 public class StateMachine : MonoBehaviour
 {
     public BaseState activeState;
-    public PatrolState patrolState = new PatrolState();
-    public ChaseState chaseState = new ChaseState();  
+    public PatrolState patrolState = new();
+    public ChaseState chaseState = new();  
 
-    public AttackState attackState = new AttackState();  
+    public AttackState attackState = new();  
 
     void Start(){
         activeState = patrolState;
         ChangeState(activeState);
     }
     void Update(){
-        if(activeState!=null){
-            activeState.PerformState(this);
-        }
+        activeState?.PerformState(this);
     }
     public void ChangeState(BaseState newState){
-        if(activeState!=null){
-            activeState.ExitState(this);
-        }
+        activeState?.ExitState(this);
 
         activeState = newState;
 

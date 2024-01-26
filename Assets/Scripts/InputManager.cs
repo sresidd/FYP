@@ -16,9 +16,6 @@ public class InputManager : MonoBehaviour
 
     public event Action<bool> OnShoot;
 
-
-    Coroutine fireCoroutine, reloadCoroutine;
-
     public static InputManager Instance;
 
     void Awake()

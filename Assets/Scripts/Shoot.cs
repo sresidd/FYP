@@ -119,19 +119,19 @@ public class Shoot : NetworkBehaviour
         audioSource.PlayOneShot(audioSource.clip);
         muzzleFlash.Play();
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-        RaycastHit hit;
-        if(Physics.Raycast(ray,out hit,100)){
+        if (Physics.Raycast(ray, out RaycastHit hit, 100))
+        {
             Enemy enemy = hit.transform.GetComponent<Enemy>();
-            if(enemy!=null)
+            if (enemy != null)
             {
                 enemy.TakeDamageEnemy();
             }
-            if(hit.rigidbody!=null)
+            if (hit.rigidbody != null)
             {
-                hit.rigidbody.AddForce(-hit.normal*impulseForce,ForceMode.Impulse);
+                hit.rigidbody.AddForce(-hit.normal * impulseForce, ForceMode.Impulse);
             }
-            GameObject impact = Instantiate(ImpactEffect,hit.point,Quaternion.LookRotation(hit.normal));
-            Destroy(impact,2f);
+            GameObject impact = Instantiate(ImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            Destroy(impact, 2f);
         }
     }
     public void InputManager_OnToggleFireMode()

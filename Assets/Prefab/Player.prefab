@@ -2458,6 +2458,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5018328448010466007}
     m_Modifications:
+    - target: {fileID: 1421603390, guid: 5ef3b48e262740e4dbbc146c4be02144, type: 3}
+      propertyPath: frameRateUI
+      value: 
+      objectReference: {fileID: 8878914811553224873}
     - target: {fileID: 1721332265, guid: 5ef3b48e262740e4dbbc146c4be02144, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -86.20007
@@ -2655,6 +2659,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8878914811553224873 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6801620788087317797, guid: 5ef3b48e262740e4dbbc146c4be02144, type: 3}
+  m_PrefabInstance: {fileID: 2692039783341817228}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &8878914811638050804 stripped

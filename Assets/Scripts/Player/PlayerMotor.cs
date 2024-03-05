@@ -17,8 +17,6 @@ public class PlayerMotor : NetworkBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>(); 
-
-
         InputManager.Instance.OnJumpPerformed += Jump;
         InputManager.Instance.OnCrouchPerformed += Crouch;
         InputManager.Instance.OnSprintPerformed += Sprint;

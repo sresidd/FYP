@@ -4,17 +4,17 @@ using TMPro;
 public class FrameCounter : MonoBehaviour
 {
     [SerializeField] 
-    private float _hudRefreshRate = 1f;
-    private float _timer;
-    public TMP_Text display_TMP_Text;
+    private float hudRefreshRate = 1f;
+    private float timeForNextFrameUpdate;
+    public TMP_Text frameRateUI;
+    private const float ONE_SECOND = 1f;
     public void Update ()
     {
-        if (Time.unscaledTime > _timer)
+        if (Time.unscaledTime > timeForNextFrameUpdate)
         {
-            int fps = (int)(1f / Time.unscaledDeltaTime);
-            display_TMP_Text.text = "FPS: " + fps;
-            _timer = Time.unscaledTime + _hudRefreshRate;
+            int fps = (int)(ONE_SECOND / Time.unscaledDeltaTime);
+            frameRateUI.text = "FPS: " + fps;
+            timeForNextFrameUpdate = Time.unscaledTime + hudRefreshRate;
         }
     }
-    
 }

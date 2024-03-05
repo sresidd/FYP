@@ -3,7 +3,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
+public class Patrol_State : Base_State<EnemyStateMachine.EnemyStates>
 {
 
     private Enemy enemy;
@@ -12,7 +12,7 @@ public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
     private LayerMask playerMask;
     private int wayPointIndex = 0;
 
-    public Patrol_State(Enemy enemy, float attackDistance, float chaseDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyState.Patrol) 
+    public Patrol_State(Enemy enemy, float attackDistance, float chaseDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyStates.Patrol) 
     {
         this.enemy = enemy;
         this.attackDistance = attackDistance;
@@ -31,11 +31,11 @@ public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
         // Implement exiting logic for patrol state
     }
 
-    public override EnemyStateMachine.EnemyState GetNextState()
+    public override EnemyStateMachine.EnemyStates GetNextState()
     {
-        if(IsPlayerInRangeForChase() && !IsPlayerInRangeForAttack()) return EnemyStateMachine.EnemyState.Chase;
-        else if(IsPlayerInRangeForAttack()) return EnemyStateMachine.EnemyState.Attack;
-        return EnemyStateMachine.EnemyState.Patrol;
+        if(IsPlayerInRangeForChase() && !IsPlayerInRangeForAttack()) return EnemyStateMachine.EnemyStates.Chase;
+        else if(IsPlayerInRangeForAttack()) return EnemyStateMachine.EnemyStates.Attack;
+        return EnemyStateMachine.EnemyStates.Patrol;
     }
 
     private bool IsPlayerInRangeForChase()

@@ -1,13 +1,11 @@
-using System;
-using System.ComponentModel.Design;
 using UnityEngine;
 
-public class Attack_State : Base_State<EnemyStateMachine.EnemyState>
+public class Attack_State : Base_State<EnemyStateMachine.EnemyStates>
 {
     private Enemy enemy;
     private float chaseDistance;
     private LayerMask playerMask;
-    public Attack_State(Enemy enemy, float chaseDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyState.Attack)
+    public Attack_State(Enemy enemy, float chaseDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyStates.Attack)
     {
         this.enemy = enemy;
         this.chaseDistance = chaseDistance;
@@ -23,10 +21,10 @@ public class Attack_State : Base_State<EnemyStateMachine.EnemyState>
         // throw new System.NotImplementedException();
     }
 
-    public override EnemyStateMachine.EnemyState GetNextState()
+    public override EnemyStateMachine.EnemyStates GetNextState()
     {
-        if(IsPlayerInRangeForChase()) return EnemyStateMachine.EnemyState.Chase;
-        return EnemyStateMachine.EnemyState.Patrol;
+        if(IsPlayerInRangeForChase()) return EnemyStateMachine.EnemyStates.Chase;
+        return EnemyStateMachine.EnemyStates.Patrol;
     }
 
     private bool IsPlayerInRangeForChase()

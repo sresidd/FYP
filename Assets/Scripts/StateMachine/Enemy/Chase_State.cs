@@ -1,16 +1,17 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Chase_State : Base_State<EnemyStateMachine.EnemyState>
 {
     private Enemy enemy;
     private float attackDistance;
     private LayerMask playerMask;
-    public Chase_State(Enemy enemy, float attackDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyState.Chase)
+    private Animator animator;
+    public Chase_State(Enemy enemy, float attackDistance, LayerMask playerMask, Animator animator) : base(EnemyStateMachine.EnemyState.Chase)
     {
         this.enemy = enemy;
         this.attackDistance = attackDistance;
         this.playerMask = playerMask;
+        this.animator = animator;
     }
     public override void EnterState()
     {

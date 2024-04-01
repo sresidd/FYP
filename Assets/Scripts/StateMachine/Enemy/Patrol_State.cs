@@ -1,7 +1,5 @@
-using System;
-using UnityEditor.Experimental.GraphView;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
 {
@@ -12,12 +10,16 @@ public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
     private LayerMask playerMask;
     private int wayPointIndex = 0;
 
-    public Patrol_State(Enemy enemy, float attackDistance, float chaseDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyState.Patrol) 
+    private Animator animator;
+
+    private Vector3 direction;
+    public Patrol_State(Enemy enemy, float attackDistance, float chaseDistance, LayerMask playerMask, Animator animator) : base(EnemyStateMachine.EnemyState.Patrol) 
     {
         this.enemy = enemy;
         this.attackDistance = attackDistance;
         this.chaseDistance = chaseDistance;
         this.playerMask = playerMask;
+        this.animator = animator;
     }
 
     public override void EnterState()
@@ -76,7 +78,12 @@ public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
     public override void UpdateState()
     {
         // Debug.Log("Updating Patrol state");
-        // Implement update logic for patrol state
+    // Implement update logic for patrol state
+        // Vector3 enemyVelocity = enemy.Agent.velocity.normalized;
+
+        animator.SetFloat("Y",  .5f);
+        // animator.SetFloat("Y", direction.z * .5f);
+
         PatrolCycle();
     }
 
@@ -90,6 +97,8 @@ public class Patrol_State : Base_State<EnemyStateMachine.EnemyState>
             }
             else
                 wayPointIndex = 0;
+
+            // direction = (enemy.transform.position - enemy.path.waypoints[wayPointIndex].position).normalized;
             enemy.Agent.SetDestination(enemy.path.waypoints[wayPointIndex].position);
         }
     }

@@ -1,5 +1,3 @@
-using System;
-using System.ComponentModel.Design;
 using UnityEngine;
 
 public class Attack_State : Base_State<EnemyStateMachine.EnemyState>
@@ -7,11 +5,14 @@ public class Attack_State : Base_State<EnemyStateMachine.EnemyState>
     private Enemy enemy;
     private float chaseDistance;
     private LayerMask playerMask;
-    public Attack_State(Enemy enemy, float chaseDistance, LayerMask playerMask) : base(EnemyStateMachine.EnemyState.Attack)
+
+    private Animator animator;
+    public Attack_State(Enemy enemy, float chaseDistance, LayerMask playerMask, Animator animator) : base(EnemyStateMachine.EnemyState.Attack)
     {
         this.enemy = enemy;
         this.chaseDistance = chaseDistance;
         this.playerMask = playerMask;
+        this.animator = animator;
     }
     public override void EnterState()
     {

@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+
     public event System.Action<float> OnAttack;
     private NavMeshAgent agent;
     public NavMeshAgent Agent {get => agent;}
